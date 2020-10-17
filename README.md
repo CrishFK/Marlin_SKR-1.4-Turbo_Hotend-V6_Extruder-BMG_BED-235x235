@@ -1,1 +1,5 @@
-# Marlin_ET4_V6_BMG_BED-235x235
+## Marlin for:
+# -MotherBoard: SKR-1.4 Turbo
+# -Hotend: V6
+# -Extruder: BMG
+# -Bed Size: 235x235
