@@ -21,12 +21,10 @@
  */
 #pragma once
 
-#if NOT_TARGET(__STM32F1__)
-  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-#endif
+#include "env_validate.h"
 
 #define BOARD_INFO_NAME   "FLY_MINI"
-#define BOARD_WEBSITE_URL "github.com/FLYmaker"
+#define BOARD_WEBSITE_URL "github.com/FLYmaker/FLY-MINI"
 #define DISABLE_JTAG
 
 //
@@ -96,17 +94,14 @@
 #endif
 
 #if HAS_TMC_UART
-  //
-  // Software serial
-  //
   #define X_SERIAL_TX_PIN                   PB0
-  #define X_SERIAL_RX_PIN                   PB0
+  #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
   #define Y_SERIAL_TX_PIN                   PA7
-  #define Y_SERIAL_RX_PIN                   PA7
+  #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
   #define Z_SERIAL_TX_PIN                   PA4
-  #define Z_SERIAL_RX_PIN                   PA4
+  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
   #define E0_SERIAL_TX_PIN                  PC2
-  #define E0_SERIAL_RX_PIN                  PC2
+  #define E0_SERIAL_RX_PIN      E0_SERIAL_TX_PIN
 #endif
 
 //
@@ -133,12 +128,12 @@
 // LCD / Controller
 //
 #define SPI_DEVICE                             2
-#define SS_PIN                              PB12
-#define SCK_PIN                             PB13
-#define MISO_PIN                            PB14
-#define MOSI_PIN                            PB15
+#define SD_SS_PIN                           PB12
+#define SD_SCK_PIN                          PB13
+#define SD_MISO_PIN                         PB14
+#define SD_MOSI_PIN                         PB15
 
-#define SDSS                              SS_PIN
+#define SDSS                           SD_SS_PIN
 #define SD_DETECT_PIN                       PB11
 
 #define BEEPER_PIN                          PC14

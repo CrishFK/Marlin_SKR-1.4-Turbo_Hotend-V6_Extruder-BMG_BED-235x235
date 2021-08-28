@@ -19,12 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
+#include "../platforms.h"
+
+#ifdef HAL_STM32
 
 /**
  * Implementation of EEPROM settings in SD Card
  */
-
-#if defined(ARDUINO_ARCH_STM32) && !defined(STM32GENERIC)
 
 #include "../../inc/MarlinConfig.h"
 
@@ -89,4 +90,4 @@ bool PersistentStore::read_data(int &pos, uint8_t *value, const size_t size, uin
 }
 
 #endif // SDCARD_EEPROM_EMULATION
-#endif // STM32 && !STM32GENERIC
+#endif // HAL_STM32

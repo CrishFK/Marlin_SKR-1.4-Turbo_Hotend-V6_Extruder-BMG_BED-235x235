@@ -21,10 +21,10 @@
  */
 #pragma once
 
-#if NOT_TARGET(TARGET_STM32F1)
-  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-#elif HOTENDS > 1 || E_STEPPERS > 1
-  #error "CCROBOT-ONLINE MEEB_3DP only supports 1 hotend / E-stepper. Comment out this line to continue."
+#include "env_validate.h"
+
+#if HOTENDS > 1 || E_STEPPERS > 1
+  #error "CCROBOT-ONLINE MEEB_3DP only supports one hotend / E-stepper. Comment out this line to continue."
 #endif
 
 // https://github.com/ccrobot-online/MEEB_3DP
@@ -84,15 +84,20 @@
 #define E0_STEP_PIN                         PA6
 #define E0_DIR_PIN                          PA5
 
-// Stepper drivers Serial UART
-#define X_SERIAL_TX_PIN                     PB3
-#define X_SERIAL_RX_PIN                     PD2
-#define Y_SERIAL_TX_PIN                     PA15
-#define Y_SERIAL_RX_PIN                     PC6
-#define Z_SERIAL_TX_PIN                     PB11
-#define Z_SERIAL_RX_PIN                     PB10
-#define E0_SERIAL_TX_PIN                    PC5
-#define E0_SERIAL_RX_PIN                    PC4
+#if HAS_TMC_UART
+  // Stepper drivers Serial UART
+  #define X_SERIAL_TX_PIN                   PB3
+  #define X_SERIAL_RX_PIN                   PD2
+
+  #define Y_SERIAL_TX_PIN                   PA15
+  #define Y_SERIAL_RX_PIN                   PC6
+
+  #define Z_SERIAL_TX_PIN                   PB11
+  #define Z_SERIAL_RX_PIN                   PB10
+
+  #define E0_SERIAL_TX_PIN                  PC5
+  #define E0_SERIAL_RX_PIN                  PC4
+#endif
 
 // Reduce baud rate to improve software serial reliability
 #define TMC_BAUD_RATE                      19200
@@ -117,7 +122,7 @@
 #define NEOPIXEL_PIN                        PC7   // The NEOPIXEL LED driving pin
 
 /**
- *     1 _____ 2
+ *     1 ----- 2
  *  PB5 | · · | PB6
  *  PA2 | · · | RESET
  *  PA3 | · · | PB8
@@ -166,10 +171,10 @@
 //
 #if SD_CONNECTION_IS(ONBOARD)
   #define SD_DETECT_PIN                     -1
-  #define SCK_PIN                           PA5
-  #define MISO_PIN                          PA6
-  #define MOSI_PIN                          PA7
-  #define SS_PIN                            PA4
+  #define SD_SCK_PIN                        PA5
+  #define SD_MISO_PIN                       PA6
+  #define SD_MOSI_PIN                       PA7
+  #define SD_SS_PIN                         PA4
 #endif
 
 #define ONBOARD_SPI_DEVICE                     1  // SPI1

@@ -25,9 +25,7 @@
  * MKS Robin E3 & E3D (STM32F103RCT6) common board pin assignments
  */
 
-#if NOT_TARGET(__STM32F1__)
-  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-#endif
+#include "env_validate.h"
 
 #define BOARD_NO_NATIVE_USB
 
@@ -70,15 +68,19 @@
 #define Y_DIR_PIN                           PB9
 #define Y_ENABLE_PIN                        PB12
 
-#define Z_STEP_PIN                          PB7
-#define Z_DIR_PIN                           PB6
+#ifndef Z_STEP_PIN
+  #define Z_STEP_PIN                        PB7
+#endif
+#ifndef Z_DIR_PIN
+  #define Z_DIR_PIN                         PB6
+#endif
 #define Z_ENABLE_PIN                        PB8
 
 #define E0_STEP_PIN                         PB4
 #define E0_DIR_PIN                          PB3
 #define E0_ENABLE_PIN                       PB5
 
-#if HAS_TMC220x
+#if HAS_TMC_UART
   /**
    * TMC2208/TMC2209 stepper drivers
    *
@@ -90,9 +92,6 @@
   //#define Z_HARDWARE_SERIAL  MSerial1
   //#define E0_HARDWARE_SERIAL MSerial1
 
-  //
-  // Software serial
-  //
   #define X_SERIAL_TX_PIN                   PC7
   #define X_SERIAL_RX_PIN                   PC7
 
@@ -124,8 +123,17 @@
 
 #define FIL_RUNOUT_PIN                      PB10  // MT_DET
 
+//
+// Power Supply Control
+//
+#if ENABLED(MKS_PWC)
+  #define PS_ON_PIN                         PA14  // PW_OFF
+  #define KILL_PIN                          PB10  // PW_DET
+  #define KILL_PIN_STATE                    HIGH
+#endif
+
 /**
- *                _____                                      _____                                     _____
+ *                -----                                      -----                                     -----
  *  (BEEPER) PC1 | 1 2 | PC3 (BTN_ENC)          (MISO) PB14 | 1 2 | PB13 (SD_SCK)                  5V | 1 2 | GND
  *  (LCD_EN) PA4 | 3 4 | PA5 (LCD_RS)        (BTN_EN1) PB11 | 3 4 | PA15 (SD_SS)         (LCD_EN) PA4 | 3 4 | PA5  (LCD_RS)
  *  (LCD_D4) PA6 | 5 6   PA7 (LCD_D5)        (BTN_EN2)  PB0 | 5 6   PB15 (SD_MOSI)       (LCD_D4) PA6 | 5 6   PB0  (BTN_EN2)
@@ -153,6 +161,19 @@
     #define DOGLCD_SCK                      PB13
     #define DOGLCD_MOSI                     PB15
 
+  #elif ENABLED(MKS_MINI_12864_V3)
+    #define DOGLCD_CS                       PA4
+    #define DOGLCD_A0                       PA5
+    #define LCD_PINS_DC                DOGLCD_A0
+    #define LCD_BACKLIGHT_PIN               -1
+    #define LCD_RESET_PIN                   PA6
+    #define NEOPIXEL_PIN                    PA7
+    #define DOGLCD_MOSI                     PB15
+    #define DOGLCD_SCK                      PB13
+    #define FORCE_SOFT_SPI
+    #define SOFTWARE_SPI
+	//#define LCD_SCREEN_ROT_180
+
   #else
 
     #define LCD_PINS_D4                     PA6
@@ -161,7 +182,7 @@
       #define LCD_PINS_D6                   PC4
       #define LCD_PINS_D7                   PC5
 
-      #if ENABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER)
+      #if !defined(BTN_ENC_EN) && ENABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER)
         #define BTN_ENC_EN           LCD_PINS_D7  // Detect the presence of the encoder
       #endif
 
@@ -175,11 +196,19 @@
 // SD Card
 //
 #define SPI_DEVICE                             2
+#define ONBOARD_SPI_DEVICE                     2
+#define SDSS                           SD_SS_PIN
+#define SDCARD_CONNECTION                ONBOARD
 #define SD_DETECT_PIN                       PC10
-#define SCK_PIN                             PB13
-#define MISO_PIN                            PB14
-#define MOSI_PIN                            PB15
-#define SS_PIN                              PA15
+#define ONBOARD_SD_CS_PIN              SD_SS_PIN
+#define NO_SD_HOST_DRIVE
+
+// TODO: This is the only way to set SPI for SD on STM32 (for now)
+#define ENABLE_SPI2
+#define SD_SCK_PIN                          PB13
+#define SD_MISO_PIN                         PB14
+#define SD_MOSI_PIN                         PB15
+#define SD_SS_PIN                           PA15
 
 #ifndef BOARD_ST7920_DELAY_1
   #define BOARD_ST7920_DELAY_1     DELAY_NS(125)

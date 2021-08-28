@@ -21,9 +21,7 @@
  */
 #pragma once
 
-#if NOT_TARGET(__STM32F1__)
-  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-#endif
+#include "env_validate.h"
 
 #define DEFAULT_MACHINE_NAME "3D Printer"
 
@@ -80,10 +78,26 @@
 #define E0_DIR_PIN                          PC14
 #define E0_ENABLE_PIN                       PC13
 
-#define X_HARDWARE_SERIAL  MSerial2
-#define Y_HARDWARE_SERIAL  MSerial2
-#define Z_HARDWARE_SERIAL  MSerial2
-#define E0_HARDWARE_SERIAL MSerial2
+#if HAS_TMC_UART
+  #define X_HARDWARE_SERIAL  MSerial2
+  #define Y_HARDWARE_SERIAL  MSerial2
+  #define Z_HARDWARE_SERIAL  MSerial2
+  #define E0_HARDWARE_SERIAL MSerial2
+
+  // Default TMC slave addresses
+  #ifndef X_SLAVE_ADDRESS
+    #define X_SLAVE_ADDRESS  0
+  #endif
+  #ifndef Y_SLAVE_ADDRESS
+    #define Y_SLAVE_ADDRESS  1
+  #endif
+  #ifndef Z_SLAVE_ADDRESS
+    #define Z_SLAVE_ADDRESS  2
+  #endif
+  #ifndef E0_SLAVE_ADDRESS
+    #define E0_SLAVE_ADDRESS 3
+  #endif
+#endif
 
 //
 // Heaters / Fans
@@ -118,8 +132,8 @@
 
 /*
 * EXP1 pinout for the LCD according to Fysetcs schematic for the Cheetah board
-*                 _____
-*  (Beeper) PC9  | 1 2 | PC12 (BTN_ENC)
+*                 -----
+*  (BEEPER) PC9  | 1 2 | PC12 (BTN_ENC)
 * (BTN_EN2) PC11 | 3 4 | PB14 (LCD_RS / MISO)
 * (BTN_EN1) PC10   5 6 | PB13 (SCK)
 *  (LCD_EN) PB12 | 7 8 | PB15 (MOSI)
